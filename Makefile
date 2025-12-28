@@ -7,7 +7,7 @@ AR      := ar
 ARFLAGS := rcs
 SRC     := $(wildcard src/*.c)
 OBJ     := $(SRC:src/%.c=build/%.o)
-LIB     := libutils.a
+LIB     := libvfcutils.a
 
 .PHONY: all clean
 

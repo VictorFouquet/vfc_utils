@@ -28,7 +28,7 @@ A collection of reusable C utility modules providing data structures, logging, r
 
 ## Building the Library
 
-The library comes with a Makefile. It compiles all source files and creates a static library (`libutils.a`).
+The library comes with a Makefile. It compiles all source files and creates a static library (`libvfcutils.a`).
 
 ```bash
 # Build the library
