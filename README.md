@@ -2,16 +2,6 @@
 
 A collection of reusable C utility modules providing data structures, logging, random utilities, math helpers, and string operations. Designed to simplify common tasks and accelerate development of C projects.
 
-## Table of Contents
-
-- [Features](#features)
-- [Modules](#modules)
-- [Getting Started](#getting-started)
-- [Building](#building)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Features
 
 - Generic doubly-linked lists (`linked_list`)
