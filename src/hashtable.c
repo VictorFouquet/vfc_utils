@@ -161,11 +161,6 @@ t_hashtable_key** hashtable_keys(t_hashtable* hashtable)
     return keys;
 }
 
-void hashtable_keys_free(t_hashtable_key* keys)
-{
-
-}
-
 t_hashtable_value** hashtable_values(t_hashtable *hashtable)
 {
     if (!hashtable) return NULL;
