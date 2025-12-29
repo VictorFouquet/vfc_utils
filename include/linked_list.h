@@ -15,21 +15,19 @@
 /* Forward declarations for linked list types. */
 typedef struct t_linked_list      t_linked_list;
 typedef struct t_linked_list_node t_linked_list_node;
-typedef int (*linked_list_sort_fn)(t_linked_list_node*, t_linked_list_node*);
-typedef bool (*linked_list_find_fn)(t_linked_list_node*, void*);
-typedef bool (*linked_list_select_fn)(t_linked_list_node*, void*);
+typedef void (*linked_list_on_free)   (t_linked_list_node*);
+typedef int  (*linked_list_sort_fn)   (t_linked_list_node*, t_linked_list_node*);
+typedef bool (*linked_list_find_fn)   (t_linked_list_node*, void*);
+typedef bool (*linked_list_select_fn) (t_linked_list_node*, void*);
 
 /***
  * @brief Creates a new linked list.
  *
- * Allocates and initializes an empty linked list. You may specify
- * an optional callback that is invoked on each node before deletion.
- *
- * @param on_node_delete Callback function called on each node before deletion.
- *                       Pass NULL if no special cleanup is required.
+ * Allocates and initializes an empty linked list. 
+ * 
  * @return Pointer to a newly allocated linked list, or NULL on allocation failure.
  */
-t_linked_list* linked_list_new(void (*on_node_delete)(t_linked_list_node*));
+t_linked_list* linked_list_new();
 
 /**
  * @brief Creates a new linked list from a NULL-terminated array of values.
@@ -38,11 +36,10 @@ t_linked_list* linked_list_new(void (*on_node_delete)(t_linked_list_node*));
  * adding each element as a node in the list.
  *
  * @param list NULL-terminated array of void* values to populate the list.
- * @param on_node_delete Optional callback called on each node before deletion.
- *                       Pass NULL if no cleanup is required.
+
  * @return Pointer to a newly allocated linked list, or NULL on allocation failure.
  */
-t_linked_list* linked_list_new_from_list(void** list, void (*on_node_delete)(t_linked_list_node*));
+t_linked_list* linked_list_new_from_list(void** list);
 
 /**
  * @brief Creates a new linked list from an array of values with a known count.
@@ -51,11 +48,10 @@ t_linked_list* linked_list_new_from_list(void** list, void (*on_node_delete)(t_l
  *
  * @param array Array of void* values to populate the list.
  * @param count Number of elements in the array.
- * @param on_node_delete Optional callback called on each node before deletion.
- *                       Pass NULL if no cleanup is required.
+
  * @return Pointer to a newly allocated linked list, or NULL on allocation failure.
  */
-t_linked_list* linked_list_new_from_array(void** array, size_t count, void (*on_node_delete)(t_linked_list_node*));
+t_linked_list* linked_list_new_from_array(void** array, size_t count);
 
 /**
  * @brief Deletes the entire linked list.
@@ -63,9 +59,10 @@ t_linked_list* linked_list_new_from_array(void** array, size_t count, void (*on_
  * Frees all nodes and the list structure itself. If a delete callback
  * was provided during creation, it is invoked once per node.
  *
- * @param list Pointer to the linked list. If NULL, nothing happens.
+ * @param list Pointer to the linked list.
+ * @param on_free Pointer to a callback function to free the values.
  */
-void linked_list_free(t_linked_list *list);
+void linked_list_free(t_linked_list *list, linked_list_on_free on_free);
 
 /**
  * @brief Appends a new node to the end of the list.
@@ -114,6 +111,16 @@ t_linked_list_node* linked_list_remove(t_linked_list* list, t_linked_list_node* 
  */
 t_linked_list_node* linked_list_remove_at(t_linked_list* list, int index);
 
+/**
+ * @brief Removes (but does not free) the nodes after the given index.
+ *
+ * The nodes are detached from the list but not freed.
+ * Use linked_list_free_after() to remove and free safely.
+ *
+ * @param list Pointer to the linked list.
+ * @param index Zero-based index of the node to remove.
+ * @return Pointer to the removed node, or NULL if index is invalid.
+ */
 void linked_list_remove_after(t_linked_list* list, int index);
 
 /**
@@ -124,10 +131,21 @@ void linked_list_remove_after(t_linked_list* list, int index);
  *
  * @param list Pointer to the linked list.
  * @param index Zero-based index of the node to delete.
+ * @param on_free Pointer to a callback function to free the values.
  */
-void linked_list_free_at(t_linked_list* list, int index);
+void linked_list_free_at(t_linked_list* list, int index, linked_list_on_free on_free);
 
-void linked_list_free_after(t_linked_list* list, int index);
+/**
+ * @brief Deletes the nodes after the given index.
+ *
+ * The nodes are removed, passed to the delete callback if set,
+ * and then freed.
+ *
+ * @param list Pointer to the linked list.
+ * @param index Zero-based index of the node to delete.
+ * @param on_free Pointer to a callback function to free the values.
+ */
+void linked_list_free_after(t_linked_list* list, int index, linked_list_on_free on_free);
 
 /**
  * @brief Returns the head node of the list.

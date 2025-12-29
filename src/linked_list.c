@@ -22,26 +22,24 @@ typedef struct t_linked_list
     t_linked_list_node* head;
     t_linked_list_node* tail;
     int               count;
-    void             (*on_node_delete)(t_linked_list_node*);
 } t_linked_list;
 
-t_linked_list* linked_list_new(void (*on_node_delete)(t_linked_list_node*))
+t_linked_list* linked_list_new()
 {
     t_linked_list* list = malloc(sizeof(t_linked_list));
 
     list->head = NULL;
     list->tail = NULL;
     list->count = 0;
-    list->on_node_delete = on_node_delete;
 
     return list;
 }
 
-t_linked_list* linked_list_new_from_list(void** list, void (*on_node_delete)(t_linked_list_node*))
+t_linked_list* linked_list_new_from_list(void** list)
 {
     if (list == NULL) return NULL;
 
-    t_linked_list* linkedlist = linked_list_new(on_node_delete);
+    t_linked_list* linkedlist = linked_list_new();
     if (linkedlist == NULL) return NULL;
 
     for (size_t i = 0; list[i] != NULL; i++)
@@ -52,11 +50,11 @@ t_linked_list* linked_list_new_from_list(void** list, void (*on_node_delete)(t_l
     return linkedlist;
 }
 
-t_linked_list* linked_list_new_from_array(void** array, size_t count, void (*on_node_delete)(t_linked_list_node*))
+t_linked_list* linked_list_new_from_array(void** array, size_t count)
 {
     if (array == NULL) return NULL;
 
-    t_linked_list* linkedlist = linked_list_new(on_node_delete);
+    t_linked_list* linkedlist = linked_list_new();
     if (linkedlist == NULL) return NULL;
 
     for (size_t i = 0; i < count; i++)
@@ -67,18 +65,18 @@ t_linked_list* linked_list_new_from_array(void** array, size_t count, void (*on_
     return linkedlist;
 }
 
-static void linked_list_node_delete(t_linked_list *list, t_linked_list_node *node)
+static void linked_list_node_delete(t_linked_list *list, t_linked_list_node *node, linked_list_on_free on_free)
 {
-    if (list->on_node_delete != NULL)
+    if (on_free != NULL)
     {
-        list->on_node_delete(node);
+        on_free(node);
     }
 
     node->next = node->previous = NULL;
     free(node);
 }
 
-void linked_list_free(t_linked_list *list)
+void linked_list_free(t_linked_list *list, linked_list_on_free on_free)
 {
     if (list == NULL) return;
 
@@ -86,7 +84,7 @@ void linked_list_free(t_linked_list *list)
     while (current != NULL)
     {
         t_linked_list_node *next = linked_list_next(current);
-        linked_list_node_delete(list, current);
+        linked_list_node_delete(list, current, on_free);
         current = next;
     }
 
@@ -213,16 +211,16 @@ void linked_list_remove_after(t_linked_list* list, int index)
     }
 }
 
-void linked_list_free_at(t_linked_list *list, int index)
+void linked_list_free_at(t_linked_list *list, int index, linked_list_on_free on_free)
 {
     t_linked_list_node *to_remove = linked_list_remove_at(list, index);
     if (to_remove != NULL)
     {
-        linked_list_node_delete(list, to_remove);
+        linked_list_node_delete(list, to_remove, on_free);
     }
 }
 
-void linked_list_free_after(t_linked_list* list, int index)
+void linked_list_free_after(t_linked_list* list, int index, linked_list_on_free on_free)
 {
     if (!list || index < 0 || index >= list->count)
         return;
@@ -240,7 +238,7 @@ void linked_list_free_after(t_linked_list* list, int index)
     while (to_free)
     {
         t_linked_list_node* next = to_free->next;
-        linked_list_node_delete(list, to_free);
+        linked_list_node_delete(list, to_free, on_free);
         list->count--;
         to_free = next;
     }
