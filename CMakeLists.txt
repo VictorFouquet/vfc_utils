@@ -58,7 +58,7 @@ target_compile_options(vfc_utils
         $<$<CONFIG:Debug>:
             -g
             -O0
-            -fsanitize=address
+            -fsanitize=address,undefined
             -fstack-protector-strong
         >
         $<$<CONFIG:Release>:
@@ -69,5 +69,5 @@ target_compile_options(vfc_utils
 
 target_link_options(vfc_utils
     PRIVATE
-        $<$<CONFIG:Debug>:-fsanitize=address>
+        $<$<CONFIG:Debug>:-fsanitize=address,undefined>
 )
