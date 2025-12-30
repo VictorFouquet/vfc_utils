@@ -28,11 +28,20 @@ A collection of reusable C utility modules providing data structures, logging, r
 
 ## Building the Library
 
-The library comes with a Makefile. It compiles all source files and creates a static library (`libvfcutils.a`).
+The library comes with a CMake file. It compiles all source files and creates a static library (`libvfcutils.a`).
+
+### Release
 
 ```bash
-# Build the library
-make
+cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release
 
-# Clean build artifacts
-make clean
+cmake --build build/release
+```
+
+### Debug
+
+```bash
+cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release
+
+cmake --build build/release
+```
