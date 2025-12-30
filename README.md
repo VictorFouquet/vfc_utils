@@ -1,68 +1,47 @@
-cmake_minimum_required(VERSION 3.16)
+# C Utilities Library
 
-project(vfc_utils
-    VERSION 1.0
-    LANGUAGES C
-)
+A collection of reusable C utility modules providing data structures, logging, random utilities, math helpers, and string operations. Designed to simplify common tasks and accelerate development of C projects.
 
-# -------------------------------
-# Build configuration
-# -------------------------------
+## Features
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS OFF)
+- Generic doubly-linked lists (`linked_list`)
+- Simple hash table implementation (`hashtable`)
+- JSON utilities (`json_utils`)
+- Logging utilities with levels (`log_utils`)
+- Math helpers (`math_utils`, `math_utils_vec2`)
+- Random number utilities (`rand_utils`)
+- String utilities (`str_utils`)
+- Unit-test ready with clear module separation
 
-# -------------------------------
-# Library target
-# -------------------------------
+## Modules
 
-file(GLOB SRC_FILES CONFIGURE_DEPENDS
-    src/*.c
-)
+| Module | Description |
+|--------|-------------|
+| `linked_list` | Generic doubly-linked list with sorting, searching, and selection capabilities. |
+| `hashtable` | Simple hash table for storing key-value pairs. |
+| `json_utils` | Utilities for JSON parsing and serialization. |
+| `log_utils` | Logging with levels: DEBUG, INFO, WARN, ERROR. |
+| `math_utils` | General math functions. |
+| `math_utils_vec2` | 2D vector math utilities. |
+| `rand_utils` | Random numbers and helpers. |
+| `str_utils` | String manipulation utilities. |
 
-add_library(vfc_utils STATIC ${SRC_FILES})
+## Building the Library
 
-# Output name: libvfcutils.a
-set_target_properties(vfc_utils PROPERTIES
-    OUTPUT_NAME vfcutils
-)
+The library comes with a CMake file. It compiles all source files and creates a static library (`libvfcutils.a`).
 
-# Public include directory
-target_include_directories(vfc_utils
-    PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+### Release
 
-# -------------------------------
-# Compiler warnings (common)
-# -------------------------------
+```bash
+cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release
 
-target_compile_options(vfc_utils
-    PRIVATE
-        -Wall
-        -Wextra
-)
+cmake --build build/release
+```
 
-# -------------------------------
-# Debug / Release flags
-# -------------------------------
+### Debug
 
-target_compile_options(vfc_utils
-    PRIVATE
-        $<$<CONFIG:Debug>:
-            -g
-            -O0
-            -fsanitize=address
-            -fstack-protector-strong
-        >
-        $<$<CONFIG:Release>:
-            -O3
-            -DNDEBUG
-        >
-)
+```bash
+cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug
 
-target_link_options(vfc_utils
-    PRIVATE
-        $<$<CONFIG:Debug>:-fsanitize=address>
-)
+cmake --build build/debug
+```
