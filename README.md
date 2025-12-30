@@ -41,7 +41,7 @@ cmake --build build/release
 ### Debug
 
 ```bash
-cmake -S . -B build/release -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug
 
-cmake --build build/release
+cmake --build build/debug
 ```
